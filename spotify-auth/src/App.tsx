@@ -3,6 +3,8 @@ import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import JoinGroup from "./pages/JoinGroup.tsx";
+import Group from "./pages/Group.tsx";
 
 function App() {
   return (
@@ -11,6 +13,9 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/join-group" element={<JoinGroup />} />
+      <Route path="/group" element={<Group />} />
+
     </Routes>
   );
 }
