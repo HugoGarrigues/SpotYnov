@@ -10,7 +10,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     const response = await loginUser(username, password);
-    console.log(response); // 🛠️ Vérifier ce que `loginUser` retourne
+    console.log(response);
 
     if(response.success === true){
       navigate("/dashboard")
@@ -20,7 +20,7 @@ const Login = () => {
         window.localStorage.setItem("token", response.token);
         window.localStorage.setItem("loggedInUser", JSON.stringify({ username }));
         console.log("Connexion réussie ! Redirection..."); 
-        navigate("/dashboard"); // ✅ Redirection uniquement en cas de succès
+        navigate("/dashboard");
     } else {
         setError(response.message || "Une erreur inconnue s'est produite");
         console.log("Erreur : ", response.message);

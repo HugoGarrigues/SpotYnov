@@ -52,7 +52,6 @@ export const joinGroup = async (groupName: string) => {
     }
 };
 
-// Fonction pour récupérer les infos du groupe
 export const getGroupInfo = async (username: string) => {
     const groups = getGroups();
     const group = groups.find(g => g.members.includes(username));
@@ -93,4 +92,27 @@ export const leaveGroup = async (username: string) => {
 
     saveGroups(groups);
     return { success: true, message: "Vous avez quitté le groupe." };
+};
+
+export const getAllGroups = () => {
+    const groups = JSON.parse(localStorage.getItem("groups") || "[]");
+    return groups.map((group: any) => ({
+        groupName: group.name,
+        memberCount: group.members.length,
+    }));
+};
+
+export const getGroupMembers = (groupName: string) => {
+    const groups = JSON.parse(localStorage.getItem("groups") || "[]");
+    const group = groups.find((g: any) => g.name === groupName);
+    if (!group) {
+        return { success: false, message: "Groupe introuvable." };
+    }
+    return {
+        success: true,
+        members: group.members.map((member: string) => ({
+            username: member,
+            isAdmin: member === group.admin,
+        })),
+    };
 };

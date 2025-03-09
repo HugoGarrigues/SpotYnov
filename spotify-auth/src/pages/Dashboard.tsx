@@ -16,13 +16,13 @@ const Dashboard = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("loggedInUser"); // Suppression de l'utilisateur stocké
-        localStorage.removeItem("token"); // Suppression du token
-        navigate("/login"); // Redirection vers la page de connexion
+        localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("token");
+        navigate("/login");
     };
 
     const handleJoinGroup = () => {
-        navigate("/join-group"); // Redirection vers la page pour rejoindre un groupe
+        navigate("/join-group");
     };
 
     return (

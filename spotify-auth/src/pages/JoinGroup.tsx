@@ -19,11 +19,9 @@ const JoinGroup = () => {
         let existingGroup = groups.find((g: any) => g.name === groupName);
 
         if (!existingGroup) {
-            // Si le groupe n'existe pas, on le crée et l'utilisateur devient admin
             existingGroup = { name: groupName, members: [user.username], admin: user.username };
             groups.push(existingGroup);
         } else {
-            // Sinon, on ajoute l'utilisateur s'il n'est pas déjà dedans
             if (!existingGroup.members.includes(user.username)) {
                 existingGroup.members.push(user.username);
             }

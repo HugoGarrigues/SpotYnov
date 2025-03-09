@@ -5,6 +5,7 @@ import Register from "./pages/Register.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import JoinGroup from "./pages/JoinGroup.tsx";
 import Group from "./pages/Group.tsx";
+import Groups from "./pages/Groups.tsx";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/join-group" element={<JoinGroup />} />
       <Route path="/group" element={<Group />} />
-
+      <Route path="/groups" element={<Groups />} />
     </Routes>
   );
 }
