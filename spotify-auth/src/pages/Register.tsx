@@ -11,10 +11,8 @@ const Register = () => {
 
   const handleRegister = async () => {
     const response = await registerUser(username, password);
-
     setMessage(response.message);
     setIsSuccess(response.success);
-
     if (response.success) {
       navigate("/login");
     }

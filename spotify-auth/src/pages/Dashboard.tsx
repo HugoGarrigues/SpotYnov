@@ -3,7 +3,6 @@ import "../styles/Dashboard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
   const handleLogout = () => {
     window.localStorage.removeItem("token");
     navigate("/");
