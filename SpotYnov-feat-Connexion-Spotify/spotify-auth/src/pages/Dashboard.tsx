@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/Dashboard.css";
+import { getUserGroup } from "../services/groupServices";
+
 
 interface LikedTrack {
   id: string;
@@ -42,10 +44,9 @@ const Dashboard = () => {
 
   // 🔐 Connexion à Spotify
   const handleConnectSpotify = () => {
-    const clientId = "9c54ed91d60f40d7b4d33be3e88e69ce";
+    const clientId = "5996e16cdba64f768b013901df287254";
     const redirectUri = "http://localhost:5173/dashboard";
-    const scopes =
-      "user-read-private user-read-email user-library-read user-read-recently-played";
+    const scopes = "user-read-private user-read-email user-library-read"; // ✅ Ajout du scope pour les titres likés
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
       redirectUri
     )}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
@@ -260,6 +261,10 @@ const Dashboard = () => {
     }
   };
 
+  // 🔹 Récupération du groupe actuel de l'utilisateur
+  const username = localStorage.getItem("username");
+  const currentGroup = username ? getUserGroup(username) : null;
+
   return (
     <div className="dashboard-container">
       <h1>Bienvenue sur votre Dashboard</h1>
@@ -271,6 +276,15 @@ const Dashboard = () => {
           <button onClick={handleLogout}>Se déconnecter</button>
           <div>
             <h2>🎯 Portrait de votre profil :</h2>
+            {currentGroup ? (
+          <p>👥 Groupe actuel : <strong>{currentGroup.name}</strong></p>
+        ) : (
+          <p>❌ Vous n'êtes dans aucun groupe.</p>
+        )}
+        <Link to="/join-group">
+          <button>Rejoindre un Groupe</button>
+        </Link>
+
             {averagePopularity !== null && (
               <p>
                 ⭐️ Popularité moyenne (10 derniers titres likés) :{" "}
@@ -327,6 +341,7 @@ const Dashboard = () => {
               </ul>
             </div>
           )}
+          <button onClick={handleLogout}>Se déconnecter</button>
         </>
       ) : (
         <button onClick={handleConnectSpotify}>Se connecter à Spotify</button>
