@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   // 🔐 Connexion à Spotify
   const handleConnectSpotify = () => {
-    const clientId = "5996e16cdba64f768b013901df287254";
+    const clientId = "412347dd5e464e63bb25f8e19264dd7e";
     const redirectUri = "http://localhost:5173/dashboard";
     const scopes = "user-read-private user-read-email user-library-read"; // ✅ Ajout du scope pour les titres likés
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
@@ -91,6 +91,9 @@ const Dashboard = () => {
             throw new Error("Erreur lors de la récupération des informations utilisateur");
           }
           const data = await response.json();
+
+          localStorage.setItem("username", data.display_name);
+
           setUserName(data.display_name);
         } catch (error) {
           console.error("Erreur lors de la récupération des informations utilisateur :", error);

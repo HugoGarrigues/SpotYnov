@@ -1,12 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Menu from "../components/Menu/Menu";
 
 const Home: React.FC = () => {
   return (
     <div>
-      <h1>Bienvenue sur SpotYnov API</h1>
-      <Link to="/register"><button>S'inscrire</button></Link>
-      <Link to="/login"><button>Se connecter</button></Link>
+      <Menu />
     </div>
   );
 };
