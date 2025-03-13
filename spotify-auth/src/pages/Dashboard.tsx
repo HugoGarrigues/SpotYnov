@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { getUserGroup, getAllGroups } from "../services/groupServices";
+import JoinGroup from "./JoinGroup"; // Import du formulaire
+import GroupsList from "../components/GroupsList";
+import Navbar from "../components/Navbar";
+import MemberProfile from "../components/MemberProfile";
+import GroupCreation from "../components/GroupCreation";
 import "../styles/Dashboard.css";
-import { getUserGroup } from "../services/groupServices";
+
 
 
 interface LikedTrack {
@@ -29,9 +35,16 @@ const formatHours = (hours: number): string => {
 };
 
 const Dashboard = () => {
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+  
   const navigate = useNavigate();
-  const [userName, setUserName] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
+  const [groups, setGroups] = useState<any[]>([]);
+  const [currentGroup, setCurrentGroup] = useState<any | null>(null);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [likedTracks, setLikedTracks] = useState<LikedTrack[]>([]);
+  const [spotifyUserName, setSpotifyUserName] = useState<string | null>(null);
   const [recommendedTracks, setRecommendedTracks] = useState<LikedTrack[]>([]);
   const [averagePopularity, setAveragePopularity] = useState<number | null>(null);
   const [averageDuration, setAverageDuration] = useState<number | null>(null);
@@ -41,6 +54,31 @@ const Dashboard = () => {
   // Temps d'écoute total "aujourd'hui" (compte entier)
   const [todayListeningHours, setTodayListeningHours] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+
+    // Vérifie que l'utilisateur est bien connecté
+    useEffect(() => {
+      if (!username) {
+        navigate("/login");
+      } else {
+        setGroups(getAllGroups());
+        setCurrentGroup(getUserGroup(username));
+      }
+    }, [username, navigate]);
+  // Récupère la liste des groupes
+  useEffect(() => {
+    setGroups(getAllGroups());
+  }, []);
+
+  // Récupération du groupe de l'utilisateur
+  useEffect(() => {
+    if (username) {
+      setCurrentGroup(getUserGroup(username));
+    }
+  }, [username]);
+
+  
+
 
   // 🔐 Connexion à Spotify
   const handleConnectSpotify = () => {
@@ -55,16 +93,11 @@ const Dashboard = () => {
 
   // 🚪 Déconnexion de Spotify
   const handleLogout = () => {
-    window.localStorage.removeItem("token");
-    setUserName(null);
-    setLikedTracks([]);
-    setRecommendedTracks([]);
-    setAveragePopularity(null);
-    setAverageDuration(null);
-    setAllAveragePopularity(null);
-    setAllAverageDuration(null);
-    setTodayListeningHours(null);
-    setError(null);
+    localStorage.removeItem("token"); // Supprime le token Spotify
+    localStorage.removeItem("username"); // Supprime le nom d'utilisateur
+    setUsername(null);
+    setSpotifyUserName(null);
+    navigate("/login"); // Redirige vers la connexion
   };
 
   // 🧠 Récupération du token après la connexion
@@ -80,25 +113,14 @@ const Dashboard = () => {
 
   // 👤 Récupération des informations utilisateur
   useEffect(() => {
-    const token = window.localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
-      const fetchUserInfo = async () => {
-        try {
-          const response = await fetch("https://api.spotify.com/v1/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des informations utilisateur");
-          }
-          const data = await response.json();
-          setUserName(data.display_name);
-        } catch (error) {
-          console.error("Erreur lors de la récupération des informations utilisateur :", error);
-          setError("Erreur lors de la récupération des informations utilisateur");
-          window.localStorage.removeItem("token");
-        }
-      };
-      fetchUserInfo();
+      fetch("https://api.spotify.com/v1/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => response.json())
+        .then((data) => setSpotifyUserName(data.display_name))
+        .catch((error) => console.error("Erreur Spotify :", error));
     }
   }, []);
 
@@ -262,93 +284,33 @@ const Dashboard = () => {
   };
 
   // 🔹 Récupération du groupe actuel de l'utilisateur
-  const username = localStorage.getItem("username");
-  const currentGroup = username ? getUserGroup(username) : null;
+
+  const clearSelectedMember = () => {
+    setSelectedMember(null);
+  };
 
   return (
-    <div className="dashboard-container">
-      <h1>Bienvenue sur votre Dashboard</h1>
-      {userName ? (
-        <>
-          <p>
-            ✅ Vous êtes connecté à votre compte Spotify : <strong>{userName}</strong>
-          </p>
-          <button onClick={handleLogout}>Se déconnecter</button>
-          <div>
-            <h2>🎯 Portrait de votre profil :</h2>
-            {currentGroup ? (
-          <p>👥 Groupe actuel : <strong>{currentGroup.name}</strong></p>
-        ) : (
-          <p>❌ Vous n'êtes dans aucun groupe.</p>
-        )}
-        <Link to="/join-group">
-          <button>Rejoindre un Groupe</button>
-        </Link>
-
-            {averagePopularity !== null && (
-              <p>
-                ⭐️ Popularité moyenne (10 derniers titres likés) :{" "}
-                {Math.round(averagePopularity)} / 100
-              </p>
-            )}
-            {averageDuration !== null && (
-              <p>
-                ⏳ Durée moyenne (10 derniers titres likés) :{" "}
-                {Math.round(averageDuration / 1000)} s
-              </p>
-            )}
-            {todayListeningHours !== null && (
-              <p>
-                🎧 Musique écoutée aujourd'hui (compte entier) :{" "}
-                {formatHours(todayListeningHours)}
-              </p>
-            )}
-            {/* Bouton pour afficher les moyennes sur tous les titres likés */}
-            <button onClick={fetchAllLikedTracks}>
-              Afficher la moyenne de TOUS les titres likés
-            </button>
-            {allAveragePopularity !== null && allAverageDuration !== null && (
-              <div>
-                <h3>Moyennes pour tous les titres likés</h3>
-                <p>
-                  ⭐️ Popularité moyenne (tous titres) : {Math.round(allAveragePopularity)} / 100
-                </p>
-                <p>
-                  ⏳ Durée moyenne (tous titres) : {Math.round(allAverageDuration / 1000)} s
-                </p>
-              </div>
-            )}
-          </div>
-          <div>
-            <h2>🎶 Vos 10 titres likés :</h2>
-            <ul>
-              {likedTracks.map((track) => (
-                <li key={track.id}>
-                  {track.name} - <strong>{track.artist}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-          {recommendedTracks.length > 0 && (
-            <div>
-              <h2>💡 Ce que vous pourriez aimer :</h2>
-              <ul>
-                {recommendedTracks.map((track) => (
-                  <li key={track.id}>
-                    {track.name} - <strong>{track.artist}</strong>
-                  </li>
-                ))}
-              </ul>
+    <div className="dashboard">
+      <GroupsList onSelectMember={setSelectedMember} />
+      <div className="content">
+      <Navbar spotifyUserName={spotifyUserName} handleConnectSpotify={handleConnectSpotify} />
+         <div className="main-section">
+         {selectedMember ? (
+          <MemberProfile member={selectedMember} group={currentGroup} onClose={clearSelectedMember} />
+          ) : (
+            <div className="welcome-screen">
+              <img src="https://via.placeholder.com/200" alt="Spotify Logo" />
+              <h2>Rejoindre un groupe</h2>
+              <p>Sur Spotynov, tu peux rejoindre un groupe et découvrir...</p>
+              <JoinGroup isEmbedded={true} />
             </div>
           )}
-          <button onClick={handleLogout}>Se déconnecter</button>
-        </>
-      ) : (
-        <button onClick={handleConnectSpotify}>Se connecter à Spotify</button>
-      )}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
+      </div>
     </div>
+      
   );
+  
 };
 
 export default Dashboard;

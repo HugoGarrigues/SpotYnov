@@ -12,7 +12,11 @@ const Login = () => {
     const response = await loginUser(username, password);
 
     if (response.success && response.token) {
-      window.localStorage.setItem("token", response.token);
+      // ✅ Stocke le username et le token après une connexion réussie
+      localStorage.setItem("username", username);
+      localStorage.setItem("token", response.token);
+
+      // ✅ Redirige vers le Dashboard après connexion
       navigate("/dashboard");
     } else {
       setError(response.message || "Une erreur inconnue s'est produite");

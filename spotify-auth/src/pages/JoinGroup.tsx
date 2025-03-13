@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { joinGroup, getUserGroup, getAllGroups } from "../services/groupServices";
 import { useNavigate, Link } from "react-router-dom";
 
-const JoinGroup = () => {
+
+const JoinGroup = ({ isEmbedded = false }: { isEmbedded?: boolean }) => {
   const [groupName, setGroupName] = useState("");
   const [message, setMessage] = useState("");
   const [currentGroup, setCurrentGroup] = useState<any | null>(null);
@@ -51,6 +52,20 @@ const JoinGroup = () => {
     setMessage(result.message);
     refreshGroupData();
   };
+
+  if (isEmbedded) {
+    return (
+      <div className="join-group-embedded">
+        <input
+          type="text"
+          placeholder="Nom du groupe"
+          value={groupName}
+          onChange={(e) => setGroupName(e.target.value)}
+        />
+        <button onClick={handleJoinGroup}>Rejoindre</button>
+      </div>
+    );
+  }
 
   return (
     <div className="group-container">
