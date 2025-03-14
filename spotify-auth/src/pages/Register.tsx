@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authServices.ts";
+import "../styles/Auth.css"; // Réutilisation du même fichier CSS
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -22,21 +23,44 @@ const Register = () => {
 
   return (
     <div className="auth-container">
-      <h1>Inscription</h1>
+      <div className="auth-text">
+      <h2 className="auth-title">Inscription</h2>
+
+      {/* Affichage du message de confirmation ou d'erreur */}
       {message && (
-        <p style={{ color: isSuccess ? "green" : "red" }}>{message}</p>
+        <p className={`message-text ${isSuccess ? "success-message" : "error-message"}`}>
+          {message}
+        </p>
       )}
-      <input
-        type="text"
-        placeholder="Pseudo"
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleRegister}>S'inscrire</button>
+
+      {/* Champs de formulaire */}
+      <div className="auth-inputs">
+        <input
+          type="text"
+          placeholder="Pseudo"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="login-input"
+        />
+        <input
+          type="password"
+          placeholder="Mot de passe"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="login-input"
+        />
+      </div>
+
+      {/* Bouton d'inscription */}
+      <button className="login-btn2" onClick={handleRegister}>
+        S'inscrire
+      </button>
+
+      {/* Lien vers la connexion */}
+      <p className="redirect-text">
+        Déjà inscrit ? <a href="/login">Se connecter</a>
+      </p>
+    </div>
     </div>
   );
 };

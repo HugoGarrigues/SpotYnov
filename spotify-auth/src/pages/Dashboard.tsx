@@ -51,7 +51,7 @@ const Dashboard = () => {
   // Vérifie que l'utilisateur est bien connecté
   useEffect(() => {
     if (!username) {
-      navigate("/login");
+      navigate("/");
     } else {
       setGroups(getAllGroups());
       setCurrentGroup(getUserGroup(username));
@@ -94,11 +94,11 @@ const Dashboard = () => {
 
   // 🚪 Déconnexion de Spotify
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Supprime le token Spotify
-    localStorage.removeItem("username"); // Supprime le nom d'utilisateur
+    localStorage.removeItem("token");
+    localStorage.removeItem("username"); 
     setUsername(null);
     setSpotifyUserName(null);
-    navigate("/login"); // Redirige vers la connexion
+    navigate("/"); 
   };
 
   // 🧠 Récupération du token après la connexion

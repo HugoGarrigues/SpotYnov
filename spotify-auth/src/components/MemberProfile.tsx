@@ -6,8 +6,6 @@ const MemberProfile = ({ member, group, onClose }: { member: string; group: any;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string | null>(null);
 
-
-
   useEffect(() => {
     fetchUserSpotifyData(member)
       .then((profile) => {

@@ -33,8 +33,6 @@ const CreateGroup = ({ onCancel }: { onCancel: () => void }) => {
   return (
  <div className="create-group-container">
       <h2>Créer un Groupe</h2>
-
-      {/* Input pour le nom du groupe */}
       <label>Nom</label>
       <input
       className="group-name-input"
@@ -46,7 +44,6 @@ const CreateGroup = ({ onCancel }: { onCancel: () => void }) => {
 
       {message && <p className="message">{message}</p>}
 
-      {/* Boutons */}
       <div className="buttons">
         <button className="cancel-btn" onClick={onCancel}>Annuler</button>
         <button className="create-btn" onClick={handleCreateGroup}>Créer Groupe</button>
