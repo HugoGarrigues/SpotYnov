@@ -67,10 +67,8 @@ const getGroups = () => {
   
     // 💾 Sauvegarde des groupes après modification
     saveGroups(groups);
-  
-    console.log("🔍 Groupes APRÈS modification :", JSON.stringify(groups, null, 2));
-  
-    return { success: true, message: `Vous avez rejoint le groupe ${groupName}` };
+
+    return { success: true };
   };
   
   

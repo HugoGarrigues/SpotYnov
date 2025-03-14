@@ -5,7 +5,8 @@ import GroupsList from "../components/GroupsList";
 import Navbar from "../components/Navbar";
 import MemberProfile from "../components/MemberProfile";
 import "../styles/Dashboard.css";
-
+import JoinGroup from "../components/JoinGroup";
+import CreateGroup from "../components/CreateGroup";
 
 
 interface LikedTrack {
@@ -25,10 +26,10 @@ interface PlayedTrack {
   playedAt: string;
 }
 
-const logoSpotynov = <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 245 173" fill="none"><g opacity="0.5"><path d="M220.33 63.0325C160.732 31.5482 90.1041 24.9272 22.8977 48.0313C13.7932 51.141 4.0447 47.148 1.04567 38.2349C-1.96006 29.3582 3.93065 18.569 14.236 15.0724C89.0105 -10.3749 167.824 -2.95826 234.574 32.4753C243.799 37.3589 247.281 48.4328 242.786 56.521C238.271 64.6239 228.402 67.2737 220.33 63.0325Z" fill="#CCA9DD"/><path d="M203.731 122.212C152.157 94.7576 90.9017 89.0053 32.6857 109.241C25.3055 111.795 17.3282 108.511 14.8861 101.284C14.7049 100.722 14.5238 100.159 14.3359 99.5974C11.9072 92.3632 16.7043 83.5815 25.0707 80.7053C89.8953 58.4043 158.303 64.8501 216.116 95.7723C223.617 99.7799 226.462 108.795 222.825 115.38C222.544 115.891 222.269 116.409 221.993 116.92C218.337 123.526 210.293 125.687 203.731 122.212Z" fill="#CCA9DD"/><path d="M186.891 170.713C143.04 147.207 90.8553 142.302 41.3009 159.69C35.3834 161.763 29.0163 159.142 27.0639 153.346C26.762 152.434 26.4668 151.521 26.1716 150.609C24.2326 144.82 28.0837 137.797 34.7929 135.469C89.9831 116.292 148.3 121.796 197.478 148.287C203.477 151.507 205.764 158.726 202.846 163.997L201.504 166.493C198.552 171.786 192.111 173.516 186.891 170.713Z" fill="#CCA9DD"/></g></svg>
-
+const logoSpotynov = <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 245 173" fill="none"><g opacity="0.5"><path d="M220.33 63.0325C160.732 31.5482 90.1041 24.9272 22.8977 48.0313C13.7932 51.141 4.0447 47.148 1.04567 38.2349C-1.96006 29.3582 3.93065 18.569 14.236 15.0724C89.0105 -10.3749 167.824 -2.95826 234.574 32.4753C243.799 37.3589 247.281 48.4328 242.786 56.521C238.271 64.6239 228.402 67.2737 220.33 63.0325Z" fill="#CCA9DD" /><path d="M203.731 122.212C152.157 94.7576 90.9017 89.0053 32.6857 109.241C25.3055 111.795 17.3282 108.511 14.8861 101.284C14.7049 100.722 14.5238 100.159 14.3359 99.5974C11.9072 92.3632 16.7043 83.5815 25.0707 80.7053C89.8953 58.4043 158.303 64.8501 216.116 95.7723C223.617 99.7799 226.462 108.795 222.825 115.38C222.544 115.891 222.269 116.409 221.993 116.92C218.337 123.526 210.293 125.687 203.731 122.212Z" fill="#CCA9DD" /><path d="M186.891 170.713C143.04 147.207 90.8553 142.302 41.3009 159.69C35.3834 161.763 29.0163 159.142 27.0639 153.346C26.762 152.434 26.4668 151.521 26.1716 150.609C24.2326 144.82 28.0837 137.797 34.7929 135.469C89.9831 116.292 148.3 121.796 197.478 148.287C203.477 151.507 205.764 158.726 202.846 163.997L201.504 166.493C198.552 171.786 192.111 173.516 186.891 170.713Z" fill="#CCA9DD" /></g></svg>
 
 const Dashboard = () => {
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
   const navigate = useNavigate();
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
@@ -47,15 +48,15 @@ const Dashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-    // Vérifie que l'utilisateur est bien connecté
-    useEffect(() => {
-      if (!username) {
-        navigate("/login");
-      } else {
-        setGroups(getAllGroups());
-        setCurrentGroup(getUserGroup(username));
-      }
-    }, [username, navigate]);
+  // Vérifie que l'utilisateur est bien connecté
+  useEffect(() => {
+    if (!username) {
+      navigate("/login");
+    } else {
+      setGroups(getAllGroups());
+      setCurrentGroup(getUserGroup(username));
+    }
+  }, [username, navigate]);
   // Récupère la liste des groupes
   useEffect(() => {
     setGroups(getAllGroups());
@@ -68,28 +69,28 @@ const Dashboard = () => {
     }
   }, [username]);
 
-  
+
 
 
   const handleConnectSpotify = () => {
     const clientId = "412347dd5e464e63bb25f8e19264dd7e";
     const redirectUri = "http://localhost:5173/dashboard";
     const scopes = [
-      "user-read-private", 
-      "user-read-email", 
-      "user-library-read", 
+      "user-read-private",
+      "user-read-email",
+      "user-library-read",
       "user-read-currently-playing", // ✅ Ajout du scope pour la musique en cours
       "user-read-playback-state",    // ✅ Permet de récupérer l'état du lecteur
       "playlist-modify-public",
-"playlist-modify-private",
-"user-library-read",
+      "playlist-modify-private",
+      "user-library-read",
 
     ].join(" ");
-  
+
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
     window.location.href = authUrl;
   };
-  
+
 
   // 🚪 Déconnexion de Spotify
   const handleLogout = () => {
@@ -291,24 +292,29 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <GroupsList onSelectMember={setSelectedMember} />
+      <GroupsList onCreateGroup={() => setIsCreatingGroup(true)} onSelectMember={setSelectedMember} /> 
       <div className="content">
-      <Navbar spotifyUserName={spotifyUserName} username handleConnectSpotify={handleConnectSpotify} handleLogout={handleLogout} />
-         <div className="main-section">
-         {selectedMember ? (
-          <MemberProfile member={selectedMember} group={currentGroup} onClose={clearSelectedMember} />
+        <Navbar spotifyUserName={spotifyUserName} username handleConnectSpotify={handleConnectSpotify} handleLogout={handleLogout} />
+        <div className="main-section">
+          {selectedMember ? (
+            <MemberProfile member={selectedMember} group={currentGroup} onClose={clearSelectedMember} />
           ) : (
             <div className="welcome-screen">
-              {logoSpotynov}
+
+              {isCreatingGroup ? (
+                <CreateGroup onCancel={() => setIsCreatingGroup(false)} />
+              ) : (
+                logoSpotynov
+              )}
             </div>
 
           )}
         </div>
       </div>
     </div>
-      
+
   );
-  
+
 };
 
 export default Dashboard;
