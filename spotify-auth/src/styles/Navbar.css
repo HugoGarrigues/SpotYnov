@@ -1,6 +1,6 @@
 .navbar {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: 10px;
     width:  67.4vw;
     height: 8.56vh;
@@ -9,25 +9,22 @@
     border-radius: 15px;
   }
   
-  .spotify-btn {
-    background: #1DB954;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .profile {
+  .navbar-left {
     display: flex;
     align-items: center;
-    cursor: pointer;
   }
-  
-  .profile img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 5px;
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
   }
-  
+
+  .navbar-right button {
+    margin-left: 10px;
+  }
+
+  .spotify-name {
+    font-size: 14px;
+    color: #646cffaa;
+    margin-left: 8px;
+  }

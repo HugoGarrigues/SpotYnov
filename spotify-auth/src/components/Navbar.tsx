@@ -1,23 +1,30 @@
 import "../styles/Navbar.css";
 
-const Navbar = ({ spotifyUserName, handleConnectSpotify }: any) => {
+const localUsername = localStorage.getItem("username");
+
+const Navbar = ({ spotifyUserName, handleConnectSpotify, handleLogout }: any) => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <h2>Spotynov</h2>
+      <h2>
+    {localUsername ? `${localUsername}` : "Utilisateur inconnu"}
+    {spotifyUserName && (
+      <span className="spotify-name">
+        ({spotifyUserName})
+      </span>
+    )}
+  </h2>
       </div>
 
       <div className="navbar-right">
-        {spotifyUserName ? (
-          <div className="profile">
-            <span>🎵 {spotifyUserName}</span>
-            <img src="https://source.unsplash.com/40x40/?music" alt="Profil" />
-          </div>
-        ) : (
+        {!spotifyUserName && (
           <button onClick={handleConnectSpotify} className="spotify-btn">
             🎧 Lier un compte Spotify
           </button>
         )}
+        <button onClick={handleLogout} className="spotify-btn">
+          Se déconnecter
+        </button>
       </div>
     </nav>
   );

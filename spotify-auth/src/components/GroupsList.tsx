@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getAllGroups } from "../services/groupServices";
 import "../styles/GroupsList.css";
+import JoinGroup from "../pages/JoinGroup";
 
 const GroupsList = ({ onSelectMember }: { onSelectMember: (member: string) => void }) => {
   const [groups] = useState(getAllGroups());
@@ -49,6 +50,13 @@ const GroupsList = ({ onSelectMember }: { onSelectMember: (member: string) => vo
           ))}
         </ul>
       )}
+      <div className="bottom-menu"> 
+        <button className="create-group">
+          Créer un groupe
+      
+        </button>
+        <JoinGroup isEmbedded={true} />
+        </div>
     </div>
   );
 };

@@ -14,13 +14,15 @@
     font-size: 24px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
+    height: 10%;
   }
   
   .group-list {
     list-style: none;
     padding: 0;
-  }
+    height: 75%;
+    overflow-y: auto;
+    }
   
   .group-item {
     display: flex;
@@ -112,4 +114,17 @@
     border-radius: 8px;
     cursor: pointer;
   }
-  
+
+  .create-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    border-radius: 50px;
+    background-color: #BD96CF;
+  }
+
+  .bottom-menu {
+    display: flex;
+    justify-content: center;
+  }
