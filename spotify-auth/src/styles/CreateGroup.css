@@ -20,7 +20,7 @@
     margin-bottom: 5px;
   }
   
-  input {
+  .group-name-input {
     width: 100%;
     padding: 10px;
     border: 1px solid #666;
@@ -32,7 +32,7 @@
     margin-bottom: 15px;
   }
   
-  input::placeholder {
+  .group-name-input::placeholder {
     color: #777;
   }
   

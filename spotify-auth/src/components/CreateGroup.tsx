@@ -37,6 +37,7 @@ const CreateGroup = ({ onCancel }: { onCancel: () => void }) => {
       {/* Input pour le nom du groupe */}
       <label>Nom</label>
       <input
+      className="group-name-input"
         type="text"
         placeholder="Entrer le nom du groupe"
         value={groupName}

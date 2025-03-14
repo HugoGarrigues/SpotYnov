@@ -3,7 +3,16 @@
     padding: 20px;
     border-radius: 10px;
     color: white;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 10px;
   }
+
   
   .back-btn {
     background: none;
@@ -57,3 +66,8 @@
     margin-top: 10px;
   }
   
+  .profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
