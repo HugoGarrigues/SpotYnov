@@ -1,0 +1,35 @@
+.group-creation {
+    text-align: center;
+    background: black;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .group-creation input,
+  .group-creation textarea {
+    width: 80%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .buttons {
+    margin-top: 20px;
+  }
+  
+  .cancel-btn {
+    background: gray;
+    color: white;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .create-btn {
+    background: purple;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+  }
+  

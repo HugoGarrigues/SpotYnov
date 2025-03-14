@@ -1,0 +1,49 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #111; 
+    color: white;
+    text-align: center;
+    width: 300px;
+  }
+  
+  .title {
+    padding: 5%;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    gap: 15px;
+  }
+  
+  button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .register-btn {
+    background-color: #c3a2d4;
+    color: white;
+  }
+  
+  .login-btn {
+    background-color: #333; 
+    color: white;
+  }
+  
+  .register-btn:hover {
+    background-color: #b292c4;
+  }
+  
+  .login-btn:hover {
+    background-color: #444;
+  }

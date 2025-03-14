@@ -1,0 +1,73 @@
+.member-profile {
+    background: #242327;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 10px;
+  }
+
+  
+  .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .profile-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-section label {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .profile-section input {
+    background: #1d1c1c;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+  }
+  
+  .music-card {
+    display: flex;
+    align-items: center;
+    background: #1d1c1c;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .music-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .exclude-btn {
+    background: #BD96CF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }

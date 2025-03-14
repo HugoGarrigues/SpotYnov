@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { getUserGroup, getAllGroups } from "../services/groupServices";
+import GroupsList from "../components/GroupsList";
+import Navbar from "../components/Navbar";
+import MemberProfile from "../components/MemberProfile";
 import "../styles/Dashboard.css";
-import { getUserGroup } from "../services/groupServices";
+import JoinGroup from "../components/JoinGroup";
+import CreateGroup from "../components/CreateGroup";
 
 
 interface LikedTrack {
@@ -21,17 +26,17 @@ interface PlayedTrack {
   playedAt: string;
 }
 
-// Fonction utilitaire pour formater un nombre d'heures en "X h Y min"
-const formatHours = (hours: number): string => {
-  const h = Math.floor(hours);
-  const m = Math.round((hours - h) * 60);
-  return `${h} h ${m} min`;
-};
+const logoSpotynov = <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 245 173" fill="none"><g opacity="0.5"><path d="M220.33 63.0325C160.732 31.5482 90.1041 24.9272 22.8977 48.0313C13.7932 51.141 4.0447 47.148 1.04567 38.2349C-1.96006 29.3582 3.93065 18.569 14.236 15.0724C89.0105 -10.3749 167.824 -2.95826 234.574 32.4753C243.799 37.3589 247.281 48.4328 242.786 56.521C238.271 64.6239 228.402 67.2737 220.33 63.0325Z" fill="#CCA9DD" /><path d="M203.731 122.212C152.157 94.7576 90.9017 89.0053 32.6857 109.241C25.3055 111.795 17.3282 108.511 14.8861 101.284C14.7049 100.722 14.5238 100.159 14.3359 99.5974C11.9072 92.3632 16.7043 83.5815 25.0707 80.7053C89.8953 58.4043 158.303 64.8501 216.116 95.7723C223.617 99.7799 226.462 108.795 222.825 115.38C222.544 115.891 222.269 116.409 221.993 116.92C218.337 123.526 210.293 125.687 203.731 122.212Z" fill="#CCA9DD" /><path d="M186.891 170.713C143.04 147.207 90.8553 142.302 41.3009 159.69C35.3834 161.763 29.0163 159.142 27.0639 153.346C26.762 152.434 26.4668 151.521 26.1716 150.609C24.2326 144.82 28.0837 137.797 34.7929 135.469C89.9831 116.292 148.3 121.796 197.478 148.287C203.477 151.507 205.764 158.726 202.846 163.997L201.504 166.493C198.552 171.786 192.111 173.516 186.891 170.713Z" fill="#CCA9DD" /></g></svg>
 
 const Dashboard = () => {
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
   const navigate = useNavigate();
-  const [userName, setUserName] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
+  const [groups, setGroups] = useState<any[]>([]);
+  const [currentGroup, setCurrentGroup] = useState<any | null>(null);
   const [likedTracks, setLikedTracks] = useState<LikedTrack[]>([]);
+  const [spotifyUserName, setSpotifyUserName] = useState<string | null>(null);
   const [recommendedTracks, setRecommendedTracks] = useState<LikedTrack[]>([]);
   const [averagePopularity, setAveragePopularity] = useState<number | null>(null);
   const [averageDuration, setAverageDuration] = useState<number | null>(null);
@@ -42,29 +47,58 @@ const Dashboard = () => {
   const [todayListeningHours, setTodayListeningHours] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // 🔐 Connexion à Spotify
+
+  // Vérifie que l'utilisateur est bien connecté
+  useEffect(() => {
+    if (!username) {
+      navigate("/");
+    } else {
+      setGroups(getAllGroups());
+      setCurrentGroup(getUserGroup(username));
+    }
+  }, [username, navigate]);
+  // Récupère la liste des groupes
+  useEffect(() => {
+    setGroups(getAllGroups());
+  }, []);
+
+  // Récupération du groupe de l'utilisateur
+  useEffect(() => {
+    if (username) {
+      setCurrentGroup(getUserGroup(username));
+    }
+  }, [username]);
+
+
+
+
   const handleConnectSpotify = () => {
-    const clientId = "5996e16cdba64f768b013901df287254";
+    const clientId = "412347dd5e464e63bb25f8e19264dd7e";
     const redirectUri = "http://localhost:5173/dashboard";
-    const scopes = "user-read-private user-read-email user-library-read"; // ✅ Ajout du scope pour les titres likés
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
+    const scopes = [
+      "user-read-private",
+      "user-read-email",
+      "user-library-read",
+      "user-read-currently-playing", // ✅ Ajout du scope pour la musique en cours
+      "user-read-playback-state",    // ✅ Permet de récupérer l'état du lecteur
+      "playlist-modify-public",
+      "playlist-modify-private",
+      "user-library-read",
+
+    ].join(" ");
+
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
     window.location.href = authUrl;
   };
 
+
   // 🚪 Déconnexion de Spotify
   const handleLogout = () => {
-    window.localStorage.removeItem("token");
-    setUserName(null);
-    setLikedTracks([]);
-    setRecommendedTracks([]);
-    setAveragePopularity(null);
-    setAverageDuration(null);
-    setAllAveragePopularity(null);
-    setAllAverageDuration(null);
-    setTodayListeningHours(null);
-    setError(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("username"); 
+    setUsername(null);
+    setSpotifyUserName(null);
+    navigate("/"); 
   };
 
   // 🧠 Récupération du token après la connexion
@@ -80,25 +114,14 @@ const Dashboard = () => {
 
   // 👤 Récupération des informations utilisateur
   useEffect(() => {
-    const token = window.localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
-      const fetchUserInfo = async () => {
-        try {
-          const response = await fetch("https://api.spotify.com/v1/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des informations utilisateur");
-          }
-          const data = await response.json();
-          setUserName(data.display_name);
-        } catch (error) {
-          console.error("Erreur lors de la récupération des informations utilisateur :", error);
-          setError("Erreur lors de la récupération des informations utilisateur");
-          window.localStorage.removeItem("token");
-        }
-      };
-      fetchUserInfo();
+      fetch("https://api.spotify.com/v1/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => response.json())
+        .then((data) => setSpotifyUserName(data.display_name))
+        .catch((error) => console.error("Erreur Spotify :", error));
     }
   }, []);
 
@@ -262,93 +285,36 @@ const Dashboard = () => {
   };
 
   // 🔹 Récupération du groupe actuel de l'utilisateur
-  const username = localStorage.getItem("username");
-  const currentGroup = username ? getUserGroup(username) : null;
+
+  const clearSelectedMember = () => {
+    setSelectedMember(null);
+  };
 
   return (
-    <div className="dashboard-container">
-      <h1>Bienvenue sur votre Dashboard</h1>
-      {userName ? (
-        <>
-          <p>
-            ✅ Vous êtes connecté à votre compte Spotify : <strong>{userName}</strong>
-          </p>
-          <button onClick={handleLogout}>Se déconnecter</button>
-          <div>
-            <h2>🎯 Portrait de votre profil :</h2>
-            {currentGroup ? (
-          <p>👥 Groupe actuel : <strong>{currentGroup.name}</strong></p>
-        ) : (
-          <p>❌ Vous n'êtes dans aucun groupe.</p>
-        )}
-        <Link to="/join-group">
-          <button>Rejoindre un Groupe</button>
-        </Link>
+    <div className="dashboard">
+      <GroupsList onCreateGroup={() => setIsCreatingGroup(true)} onSelectMember={setSelectedMember} /> 
+      <div className="content">
+        <Navbar spotifyUserName={spotifyUserName} username handleConnectSpotify={handleConnectSpotify} handleLogout={handleLogout} />
+        <div className="main-section">
+          {selectedMember ? (
+            <MemberProfile member={selectedMember} group={currentGroup} onClose={clearSelectedMember} />
+          ) : (
+            <div className="welcome-screen">
 
-            {averagePopularity !== null && (
-              <p>
-                ⭐️ Popularité moyenne (10 derniers titres likés) :{" "}
-                {Math.round(averagePopularity)} / 100
-              </p>
-            )}
-            {averageDuration !== null && (
-              <p>
-                ⏳ Durée moyenne (10 derniers titres likés) :{" "}
-                {Math.round(averageDuration / 1000)} s
-              </p>
-            )}
-            {todayListeningHours !== null && (
-              <p>
-                🎧 Musique écoutée aujourd'hui (compte entier) :{" "}
-                {formatHours(todayListeningHours)}
-              </p>
-            )}
-            {/* Bouton pour afficher les moyennes sur tous les titres likés */}
-            <button onClick={fetchAllLikedTracks}>
-              Afficher la moyenne de TOUS les titres likés
-            </button>
-            {allAveragePopularity !== null && allAverageDuration !== null && (
-              <div>
-                <h3>Moyennes pour tous les titres likés</h3>
-                <p>
-                  ⭐️ Popularité moyenne (tous titres) : {Math.round(allAveragePopularity)} / 100
-                </p>
-                <p>
-                  ⏳ Durée moyenne (tous titres) : {Math.round(allAverageDuration / 1000)} s
-                </p>
-              </div>
-            )}
-          </div>
-          <div>
-            <h2>🎶 Vos 10 titres likés :</h2>
-            <ul>
-              {likedTracks.map((track) => (
-                <li key={track.id}>
-                  {track.name} - <strong>{track.artist}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-          {recommendedTracks.length > 0 && (
-            <div>
-              <h2>💡 Ce que vous pourriez aimer :</h2>
-              <ul>
-                {recommendedTracks.map((track) => (
-                  <li key={track.id}>
-                    {track.name} - <strong>{track.artist}</strong>
-                  </li>
-                ))}
-              </ul>
+              {isCreatingGroup ? (
+                <CreateGroup onCancel={() => setIsCreatingGroup(false)} />
+              ) : (
+                logoSpotynov
+              )}
             </div>
+
           )}
-          <button onClick={handleLogout}>Se déconnecter</button>
-        </>
-      ) : (
-        <button onClick={handleConnectSpotify}>Se connecter à Spotify</button>
-      )}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
+      </div>
     </div>
+
   );
+
 };
 
 export default Dashboard;

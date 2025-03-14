@@ -1,0 +1,30 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    width:  67.4vw;
+    height: 8.56vh;
+    background-color: #121212;
+    margin-top: 25px;
+    border-radius: 15px;
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-right button {
+    margin-left: 10px;
+  }
+
+  .spotify-name {
+    font-size: 14px;
+    color: #646cffaa;
+    margin-left: 8px;
+  }
