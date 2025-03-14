@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getUserGroup, getAllGroups } from "../services/groupServices";
-import JoinGroup from "./JoinGroup"; // Import du formulaire
+import JoinGroup from "./JoinGroup"; 
 import GroupsList from "../components/GroupsList";
 import Navbar from "../components/Navbar";
 import MemberProfile from "../components/MemberProfile";
-import GroupCreation from "../components/GroupCreation";
 import "../styles/Dashboard.css";
 
 
@@ -27,22 +26,13 @@ interface PlayedTrack {
   playedAt: string;
 }
 
-// Fonction utilitaire pour formater un nombre d'heures en "X h Y min"
-const formatHours = (hours: number): string => {
-  const h = Math.floor(hours);
-  const m = Math.round((hours - h) * 60);
-  return `${h} h ${m} min`;
-};
 
 const Dashboard = () => {
-  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
-  
   const navigate = useNavigate();
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
   const [groups, setGroups] = useState<any[]>([]);
   const [currentGroup, setCurrentGroup] = useState<any | null>(null);
-  const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [likedTracks, setLikedTracks] = useState<LikedTrack[]>([]);
   const [spotifyUserName, setSpotifyUserName] = useState<string | null>(null);
   const [recommendedTracks, setRecommendedTracks] = useState<LikedTrack[]>([]);
@@ -80,16 +70,25 @@ const Dashboard = () => {
   
 
 
-  // 🔐 Connexion à Spotify
   const handleConnectSpotify = () => {
     const clientId = "5996e16cdba64f768b013901df287254";
     const redirectUri = "http://localhost:5173/dashboard";
-    const scopes = "user-read-private user-read-email user-library-read"; // ✅ Ajout du scope pour les titres likés
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
+    const scopes = [
+      "user-read-private", 
+      "user-read-email", 
+      "user-library-read", 
+      "user-read-currently-playing", // ✅ Ajout du scope pour la musique en cours
+      "user-read-playback-state",    // ✅ Permet de récupérer l'état du lecteur
+      "playlist-modify-public",
+"playlist-modify-private",
+"user-library-read",
+
+    ].join(" ");
+  
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
     window.location.href = authUrl;
   };
+  
 
   // 🚪 Déconnexion de Spotify
   const handleLogout = () => {
