@@ -73,7 +73,7 @@ const Dashboard = () => {
 
 
   const handleConnectSpotify = () => {
-    const clientId = "412347dd5e464e63bb25f8e19264dd7e";
+    const clientId = ""; // ✅ Remplacer par votre Client ID Spotify
     const redirectUri = "http://localhost:5173/dashboard";
     const scopes = [
       "user-read-private",

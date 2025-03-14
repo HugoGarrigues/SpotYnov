@@ -26,6 +26,13 @@ Ouvrir le projet dans VS Code : Ouvrez le projet cloné dans Visual Studio Code.
 
         cd .\spotify-auth\
 
+3. **Remplacer les informations d'authentification :**
+    > Remplacer les informations d'authentification : Ouvrez le fichier Dashboard.tsx et remplacer "clientId" par votre id client Spotify.
+
+    ```bash
+    const clientId = ""; // ✅ Remplacer par votre Client ID Spotify
+    ```
+
 ## Installer les dépendances : 
 
 ### Installez les dépendances nécessaires avec la commande :
@@ -62,6 +69,3 @@ Cela démarrera le projet localement.
 Remarque
 
 Assurez-vous d'avoir correctement configuré votre application Spotify dans le dashboard développeur et d'avoir configuré les informations d'authentification nécessaires pour interagir avec l'API Spotify.
-
-
-Ce README explique les étapes d'installation et de lancement du projet, ainsi que les prérequis nécessaires. Si tu as des informations supplémentaires ou des modifications à faire, je suis là pour t'aider !
